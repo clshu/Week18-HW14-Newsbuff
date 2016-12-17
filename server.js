@@ -53,22 +53,42 @@ app.get("/", function(req, res) {
 
 // A GET request to scrape the echojs website
 app.get("/scrape", function(req, res) {
-  // First, we grab the body of the html with request
-  request("http://www.echojs.com/", function(error, response, html) {
-    // Then, we load that into cheerio and save it to $ for a shorthand selector
-    var $ = cheerio.load(html);
-    // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function(i, element) {
 
-      // Save an empty result object
+  // Making a request call for CNET100. But only pick top 10
+  request("https://www.cnet.com/cnet100", function(error, response, html) {
+    debugger;
+   // Load the HTML into cheerio and save it to a variable
+   // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
+   var $ = cheerio.load(html);
+
+   // An empty array to save the data that we'll scrape
+   var results = [];
+   var count = 0;
+
+    // With cheerio, 
+    // (i: iterator. element: the current element)
+    $(".item").each(function(i, element) {
+      // initialize result
       var result = {};
+      // Save the text of the element (this) in a "title" variable
+      result.title = $(this).find("div.title > h2").html();
 
-      // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this).children("a").text();
-      result.link = $(this).children("a").attr("href");
+      // Somehow sometime return entries are corrupted and title is null
+      // and other attribute are undefined
+      // Skip those entries and continue next iteration
+      if (!result.title) return true;
+
+
+      // In the currently selected element, look at its child elements (i.e., its a-tags),
+      // then save the values for any "href" attributes that the child elements may have
+      result.link = $(this).children().attr("href");
+
+      result.summary = $(this).find("div.dek").html();
+
+      result.rank = $(this).find("div.rankInner").html();
 
       // Using our Article model, create a new entry
-      // This effectively passes the result object to the entry (and the title and link)
+      // This effectively passes the result object to the entry
       var entry = new Article(result);
 
       // Now, save that entry to the db
@@ -83,8 +103,17 @@ app.get("/scrape", function(req, res) {
         }
       });
 
+      // Only top 10 entries are selected, break out the loop
+      // if it reaches 10 entries
+      count++;
+      if (count == 10) return false;
     });
+
+    // Log the result once cheerio analyzes each of its selected elements
+    //console.log(results);
   });
+
+  
   // Tell the browser that we finished scraping the text
   res.send("Scrape Complete");
 });
@@ -155,7 +184,7 @@ app.post("/articles/:id", function(req, res) {
 });
 
 
-// Listen on port 3000
-app.listen(3000, function() {
-  console.log("App running on port 3000!");
+var port = process.env.PORT || 3000;
+app.listen(port, function() {
+  console.log("App running on port " + port + " !");
 });

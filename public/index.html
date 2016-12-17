@@ -2,48 +2,50 @@
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
-    <title>Scraping With Mongoose</title>
-    <style>
-      body { background-color: #F2F6D0 }
-      #wrapper {
-        width: 960px;
-        margin-left: auto;
-        margin-right: auto;
-        padding-top: 5%;
-      }
-      #articles {
-        display: inline-block;
-        overflow: auto;
-        width: 60%;
-        height: 700px;
-      }
-      #notes {
-        float: right;
-        width: 30%;
-      }
-      textarea, input {
-        display: block;
-        width: 100%;
-        background-color: #FCF5C7;
-      }
-      input {
-        height: 36px;
-        font-size: 24px;
-      }
-      textarea {
-        height: 200px;
-        font-size: 18px;
-      }
-    </style>
+    <title>Top 10 of CNET100</title>
+   <link rel="stylesheet" type="text/css" href="style.css">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
   </head>
   <body>
-    <div id="wrapper">
-      <h1>Note Scraper</h1>
-      <h2><i>If you can do this...the homework should be no problem.</i></h2>
-      <div id="articles"></div>
-      <div id="notes"></div>
+    <div id="container">
+
+    <div class="jumbotron text-center">
+      <h2>Top 10 of CNET100</h2>
+      <h3>Click the title of the article to write note</h3>
     </div>
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-    <script src="app.js"></script>
+    <div class="row">
+      <div class="col-sm-3">
+      <form>
+        <div class="form-group">
+          
+           <textarea class="form-control" id="saveNote" rows="20"></textarea>
+        </div>
+  
+        <button type="button" class="btn btn-primary btn-lg" id="saveBtn">Save</button>
+      </form>
+
+      </div>
+      <div class="col-sm-6 myBox">
+        <div class="well well-lg" id="articles">
+          
+        </div>
+        
+      </div>
+      <div class="col-sm-3">
+        <div class="well well-lg pre-scrollable" id="displayNote">
+          
+        </div>
+        <button type="button" class="btn btn-primary btn-lg" id="deleteBtn">Delete</button>
+      </div>
+
+      
+    </div>
+  
+    
+    <script src="./app.js"></script>
   </body>
 </html>
