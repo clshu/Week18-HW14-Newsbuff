@@ -122,11 +122,18 @@ app.get("/scrape", function(req, res) {
 app.get("/articles", function(req, res) {
   // Grab every doc in the Articles array
   Article.find({}, function(error, doc) {
+    // ..and populate all of the notes associated with it
+    if (error) {
+      console.log(error);
+    }
+  }).populate("note")
+  // now, execute our query
+  .exec(function(error, doc) {
     // Log any errors
     if (error) {
       console.log(error);
     }
-    // Or send the doc to the browser as a json object
+    // Otherwise, send the doc to the browser as a json object
     else {
       res.json(doc);
     }
