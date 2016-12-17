@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/clshu/Week18-HW14-Newsbuff/issues"
   },
-  "homepage": "https://github.com/clshu/Week18-HW14-Newsbuff#readme"
+  "homepage": "https://github.com/clshu/Week18-HW14-Newsbuff#readme",
+  "dependencies": {
+    "bluebird": "3.4.6",
+    "body-parser": "1.15.2",
+    "cheerio": "0.22.0",
+    "express": "4.14.0",
+    "mongoose": "4.7.3",
+    "morgan": "1.7.0",
+    "request": "2.79.0"
+  }
 }
