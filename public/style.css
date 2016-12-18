@@ -1,16 +1,11 @@
 
-.myBox {
-	border: solid 2px black;
-	height: 300px;
-	border-radius: 2px;
-}
 
 #saveNote, #displayNote {
 	width: 100%;
 	height: 300px;
 }
 
-#articles{
+#article {
 	height: 100%;
 	overflow-y: scroll;
 }
