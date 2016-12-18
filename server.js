@@ -28,8 +28,14 @@ app.use(bodyParser.urlencoded({
 // Make public a static dir
 app.use(express.static("public"));
 
+var MONGODB;
+if (process.env.NODE_ENV == "production") {
+  MONGODB = "mongodb://heroku_gs8l5l12:m4qcstnrgsrj0ud1faqfhc1p0d@ds139278.mlab.com:39278/heroku_gs8l5l12";
+} else {
+  MONGODB = "mongodb://localhost/newsbuff";
+}
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/newsbuff");
+mongoose.connect(MONGODB);
 var db = mongoose.connection;
 
 // Show any mongoose errors
