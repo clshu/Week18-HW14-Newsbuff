@@ -8,7 +8,7 @@ function createArticleDisplayNoteHTML(item) {
 
       $("#article").empty();
       $("#displayNote").empty();
-      $("#saveNote").empty();
+      $("#saveNote").val("");
 
       var article = $("#article");
       var titleLine = $("<h2>").addClass("articleTitle");
@@ -90,7 +90,7 @@ function readyFn() {
     // Don't save empty note
     if (!note) return;
     
-
+    $("#saveNote").val("");
     // Grab the id associated with the article from the save button
   
     var thisId = $(this).attr("data-id");
@@ -103,13 +103,13 @@ function readyFn() {
         // Value taken from article
         title: $(".articleTitle").html(),
         // Value taken from note textarea
-        body: $("#saveNote").val()
+        body: note
       }
     })
     // With that done
     .done(function(data) {
       // Log the response
-      //console.log(data);
+      console.log(data);
       createArticleDisplayNoteHTML(data);
     });
 

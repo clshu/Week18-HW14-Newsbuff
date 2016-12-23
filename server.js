@@ -148,21 +148,8 @@ app.get("/articles", function(req, res) {
 
 // Grab an article by it's ObjectId
 app.get("/articles/:id", function(req, res) {
-  // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-  Article.findOne({ "_id": req.params.id })
-  // ..and populate all of the notes associated with it
-  .populate("note")
-  // now, execute our query
-  .exec(function(error, doc) {
-    // Log any errors
-    if (error) {
-      console.log(error);
-    }
-    // Otherwise, send the doc to the browser as a json object
-    else {
-      res.json(doc);
-    }
-  });
+  
+    findArticleById(req.params.id, res);
 });
 
 
@@ -188,15 +175,37 @@ app.post("/articles/:id", function(req, res) {
           console.log(err);
         }
         else {
-          // Or send the document to the browser
-          res.send(doc);
+         findArticleById(req.params.id, res);
         }
       });
     }
   });
 });
 
+// Function
 
+// Using the id passed in the id parameter,
+// prepare a query that finds the matching one in our db...
+// and send response back to client (browser)
+function findArticleById(id, res) {
+  // finds the matching one in our db
+  Article.findOne({ "_id": id })
+  // ..and populate all of the notes associated with it
+  .populate("note")
+  // now, execute our query
+  .exec(function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    }
+    // Otherwise, send the doc to the browser as a json object
+    else {
+      res.json(doc);
+    }
+  });
+}
+
+// Listen to port
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
   console.log("App running on port " + port + " !");
