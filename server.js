@@ -1,5 +1,6 @@
 
 // Dependencies
+var path = require('path');
 var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
@@ -61,7 +62,7 @@ db.once("open", function() {
 
 // Simple index route
 app.get("/", function(req, res) {
-  res.send(index.html);
+  res.sendFile(path.join(__dirname, 'public/assets/html/index.html'));
 });
 
 // A GET request to scrape the echojs website
