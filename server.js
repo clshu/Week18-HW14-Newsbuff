@@ -29,8 +29,11 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 var MONGODB;
+// If it's in production (i.e. on heroku)
+// use environment variable MONGODB_URI
+// else use localhost to connecto to mongo DB
 if (process.env.NODE_ENV == "production") {
-  MONGODB = "mongodb://heroku_gs8l5l12:m4qcstnrgsrj0ud1faqfhc1p0d@ds139278.mlab.com:39278/heroku_gs8l5l12";
+  MONGODB = process.env.MONGODB_URI;
 } else {
   MONGODB = "mongodb://localhost/newsbuff";
 }
