@@ -134,7 +134,7 @@ app.get("/scrape", function(req, res) {
 
 // This will get the articles we scraped from the mongoDB
 app.get("/articles", function(req, res) {
-  // Grab every doc in the Articles array
+  // Grab every doc in the Article collection
   // Sort it on rank,
   // the return order is non-deterministic
   // without proper sorting
