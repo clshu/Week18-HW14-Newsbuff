@@ -94,7 +94,7 @@ app.get("/scrape", function(req, res) {
 
       result.summary = $(this).find("div.dek").html();
 
-      result.rank = $(this).find("div.rankInner").html();
+      result.rank = parseInt($(this).find("div.rankInner").html());
 
       // Using our Article model, create a new entry
       // This effectively passes the result object to the entry
@@ -130,12 +130,14 @@ app.get("/scrape", function(req, res) {
 // This will get the articles we scraped from the mongoDB
 app.get("/articles", function(req, res) {
   // Grab every doc in the Articles array
-  Article.find({}, function(error, doc) {
-    // ..and populate all of the notes associated with it
-    if (error) {
-      console.log(error);
-    }
-  }).populate("note")
+  // Sort it on rank,
+  // the return order is non-deterministic
+  // without proper sorting
+  Article
+  .find({})
+  .sort({rank: 1})
+  // ..and populate all of the notes associated with it
+  .populate("note")
   // now, execute our query
   .exec(function(error, doc) {
     // Log any errors

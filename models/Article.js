@@ -16,7 +16,7 @@ var ArticleSchema = new Schema({
     required: true
   },
   rank: {
-    type: String,
+    type: Number,
     required: true
   },
   summary: {
