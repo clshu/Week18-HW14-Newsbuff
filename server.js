@@ -244,8 +244,8 @@ function updateArticleNoteById(article_id, note_id, res) {
     });
 }
 
-// Create a new note, update the note id in the article with
-// article_id, then send the article back to the browser  
+// Create a new note, update article.note in the article
+// then send the article back to the browser  
 function createNoteUpdateArticleNote(article_id, req, res) {
   // Create a new note and pass the req.body to the entry
   var newNote = new Note(req.body);
