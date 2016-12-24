@@ -23,7 +23,7 @@ function createArticleDisplayNoteHTML(item) {
       $("#saveBtn").attr("data-id", item._id)
       // If there's a note in the article
       if (item.note) {
-        console.log(item.note);
+        //console.log(item.note);
         var noteHTML = $("<p>").html(item.note.body);
         $("#displayNote").append(noteHTML);
         // set data-id of deleteBtn with node's _id
@@ -39,7 +39,7 @@ $(document).ready(readyFn);
 function readyFn() {
 
   // Grab the articles as a json
-  console.log("index: " + index);
+
   $.getJSON("/articles", function(data) {
     
     articles = [];
@@ -112,5 +112,30 @@ function readyFn() {
   
   });
 
+  // When you click the delete button
+  $(document).on("click", "#deleteBtn", function() {
+    // Grab the id associated with the article from the save button
+    var note_id = $(this).attr("data-id");
+    
+    // Don't delete empty note
+    if (!note_id) return;
+    
+    // Run a POST request to delete note abd update article.note
+    $.ajax({
+      method: "POST",
+      url: "/note/?_method=DELETE",
+      data: {
+        article_id: $("#article").attr("data-id"),
+        note_id: note_id
+      }
+    })
+    // With that done
+    .done(function(data) {
+      // Log the response
+      //console.log(data);
+      createArticleDisplayNoteHTML(data);
+    });
+  
+  });
 
 };

@@ -10,6 +10,8 @@ var Article = require("./models/Article.js");
 // Our scraping tools
 var request = require("request");
 var cheerio = require("cheerio");
+// Override HTTP method
+var methodOverride = require('method-override');
 // Mongoose mpromise deprecated - use bluebird promises
 var Promise = require("bluebird");
 
@@ -27,6 +29,8 @@ app.use(bodyParser.urlencoded({
 
 // Make public a static dir
 app.use(express.static("public"));
+
+app.use(methodOverride('_method'));
 
 var MONGODB;
 // If it's in production (i.e. on heroku)
@@ -174,6 +178,23 @@ app.post("/articles/:id", function(req, res) {
         // new note's _id
         createNodeUpdateArticleNote(req.params.id, req, res);   
       }
+    }
+  })  
+});
+
+// Override POST with DELETE
+app.delete("/note", function(req, res) {
+  var article_id = req.body.article_id;
+  var note_id = req.body.note_id;
+
+  // Remove the note from Note collection first
+  Note.remove({ "_id": note_id })
+  .exec(function(error, note) {
+    if (error) {
+      console.log(error);
+    } else {
+      // After the note is removed, now pass null to remove article.note from the article
+      updateArticleNoteById(article_id, null, res);
     }
   })  
 });
