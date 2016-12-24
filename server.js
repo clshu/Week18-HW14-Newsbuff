@@ -164,25 +164,13 @@ app.post("/articles/:id", function(req, res) {
   var newNote = new Note(req.body);
 
   // And save the new note the db
-  newNote.save(function(error, doc) {
+  newNote.save(function(error, savedNote) {
     // Log any errors
     if (error) {
       console.log(error);
-    }
-    // Otherwise
-    else {
-      // Use the article id to find and update it's note
-      Article.findOneAndUpdate({ "_id": req.params.id }, { "note": doc._id })
-      // Execute the above query
-      .exec(function(err, doc) {
-        // Log any errors
-        if (err) {
-          console.log(err);
-        }
-        else {
-         findArticleById(req.params.id, res);
-        }
-      });
+    } else {
+      // Otherwise
+      updateArticleNoteById(req.params.id, savedNote, res);
     }
   });
 });
@@ -210,6 +198,20 @@ function findArticleById(id, res) {
   });
 }
 
+//
+function updateArticleNoteById(article_id, note, res) {
+    // Use the article id to find and update it's note
+    Article.findOneAndUpdate({ "_id": article_id }, { "note": note._id })
+    // Execute the above query
+    .exec(function(err, doc) {
+      // Log any errors
+      if (err) {
+        console.log(err);
+      }  else {
+        findArticleById(article_id, res);
+      }
+    });
+}
 // Listen to port
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
