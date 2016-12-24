@@ -120,7 +120,7 @@ function readyFn() {
     // Don't delete empty note
     if (!note_id) return;
     
-    // Run a POST request to delete note abd update article.note
+    // Run a POST request to delete note and update article.note
     $.ajax({
       method: "POST",
       url: "/note/?_method=DELETE",
