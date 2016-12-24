@@ -39,7 +39,7 @@ $(document).ready(readyFn);
 function readyFn() {
 
   // Grab the articles as a json
-
+  index = 0;
   $.getJSON("/articles", function(data) {
     
     articles = [];
