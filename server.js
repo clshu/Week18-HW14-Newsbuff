@@ -165,6 +165,7 @@ app.get("/articles/:id", function(req, res) {
 
 // Create a new note or replace an existing note
 // This ensure Article and Note has one to one relationship
+// and no extra unused Note entries
 app.post("/articles/:id", function(req, res) {
   Article.findOne({ "_id": req.params.id })
   .exec(function(error, article) {
@@ -172,12 +173,14 @@ app.post("/articles/:id", function(req, res) {
       console.log(error);
     } else {
       if (article.note) {
-        // Replace the existing note which _id is saved in article.note
+        // If there is a note entry related this article exists,
+        // then replace the existing note of that note _id with
+        // the new note contentes in req.body
         updateNoteById(article, req.body, res);
       } else {
         // Create a new note and update Article.note with
         // new note's _id
-        createNodeUpdateArticleNote(req.params.id, req, res);   
+        createNoteUpdateArticleNote(req.params.id, req, res);   
       }
     }
   })  
@@ -194,7 +197,7 @@ app.delete("/note", function(req, res) {
     if (error) {
       console.log(error);
     } else {
-      // After the note is removed, now pass null to remove article.note from the article
+      // After the note is removed, now nullify article.note of the article
       updateArticleNoteById(article_id, null, res);
     }
   })  
@@ -203,8 +206,9 @@ app.delete("/note", function(req, res) {
 // Function
 
 // Using the id passed in the id parameter,
-// prepare a query that finds the matching one in our db...
-// and send the article back to client (browser)
+// prepare a query that finds the matching article in our db
+// populate it with the related note entry if there is one,
+// and send the article back to the browser
 function findArticleById(id, res) {
   // finds the matching one in our db
   Article.findOne({ "_id": id })
@@ -223,10 +227,10 @@ function findArticleById(id, res) {
   });
 }
 
-// Update note id in an article with article_id
+// Update article.note in the article with article_id
 // then send the article back to the browser
 function updateArticleNoteById(article_id, note_id, res) {
-    // Use the article id to find and update it's note
+    // Use the article id to find and update the article's note
     Article.findOneAndUpdate({ "_id": article_id }, { "note": note_id })
     // Execute the above query
     .exec(function(err, doc) {
@@ -234,6 +238,7 @@ function updateArticleNoteById(article_id, note_id, res) {
       if (err) {
         console.log(err);
       }  else {
+        // send the article back to the browser
         findArticleById(article_id, res);
       }
     });
@@ -241,7 +246,7 @@ function updateArticleNoteById(article_id, note_id, res) {
 
 // Create a new note, update the note id in the article with
 // article_id, then send the article back to the browser  
-function createNodeUpdateArticleNote(article_id, req, res) {
+function createNoteUpdateArticleNote(article_id, req, res) {
   // Create a new note and pass the req.body to the entry
   var newNote = new Note(req.body);
 
@@ -256,7 +261,7 @@ function createNodeUpdateArticleNote(article_id, req, res) {
     }
   });
 }
-// Update and existing note that its _id is saved in the article.note
+// Update an existing note of which its _id is saved in the article.note
 // then send the article back to the browser
 function updateNoteById(article, note, res) { 
   // Update the note with new contents
@@ -268,6 +273,7 @@ function updateNoteById(article, note, res) {
       if (err) {
         console.log(err);
       }  else {
+        // send the article back to the browser
         findArticleById(article._id, res);
       }
     });

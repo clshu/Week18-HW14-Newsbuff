@@ -4,6 +4,11 @@ var articles = [];
 var index = 0;
 
 // Functions
+
+// Create <div id="article"></div> and add article title, summary 
+// and link to it. Add the article id to the <div> and save button data-id attribute.
+// If the article has a note, add the note to <div id="displayNote">..</div>
+// and add the note id to delete button data-id attribute
 function createArticleDisplayNoteHTML(item) {
 
       $("#article").empty();
@@ -45,10 +50,10 @@ function readyFn() {
     articles = [];
     // Save data in array articles
     data.forEach(function(item) {
-      //console.log(item);
       articles.push(item);
     });
-
+    // Show first article, because index is 0 when
+    // the document is just loaded and ready
     createArticleDisplayNoteHTML(articles[index]);
     index++;
     
@@ -58,13 +63,12 @@ function readyFn() {
 
   // Click on article 
   $(document).on("click", "#article", function() {
-    // Empty the notes from the saveNote section
     
     // get next article's id from array articles
     var thisId = articles[index]._id;
     index++;
-    // Keep index between 0 and 9
-    index = index % 10;
+    // Keep index between 0 and (articles.length - 1)
+    index = index % articles.length;
 
     // Now make an ajax call for the Article
     $.ajax({
@@ -73,7 +77,7 @@ function readyFn() {
     })
     // With that done, refresh article and add the note information to the page
     .done(function(data) {
-      //console.log(data); 
+      // create HTML elements
       createArticleDisplayNoteHTML(data);     
     });
        
@@ -83,7 +87,7 @@ function readyFn() {
   // When you click the save button
   $(document).on("click", "#saveBtn", function() {
     var note = $("#saveNote").val().trim();
-    //console.log(note);
+
     // Don't save empty note
     if (!note) return;
     
@@ -105,8 +109,7 @@ function readyFn() {
     })
     // With that done
     .done(function(data) {
-      // Log the response
-      //console.log(data);
+      // create HTML elements
       createArticleDisplayNoteHTML(data);
     });
   
@@ -131,8 +134,7 @@ function readyFn() {
     })
     // With that done
     .done(function(data) {
-      // Log the response
-      //console.log(data);
+      // create HTML elements
       createArticleDisplayNoteHTML(data);
     });
   
