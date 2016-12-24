@@ -159,20 +159,23 @@ app.get("/articles/:id", function(req, res) {
 
 
 // Create a new note or replace an existing note
+// This ensure Article and Note has one to one relationship
 app.post("/articles/:id", function(req, res) {
-  // Create a new note and pass the req.body to the entry
-  var newNote = new Note(req.body);
-
-  // And save the new note the db
-  newNote.save(function(error, savedNote) {
-    // Log any errors
+  Article.findOne({ "_id": req.params.id })
+  .exec(function(error, article) {
     if (error) {
       console.log(error);
     } else {
-      // Otherwise
-      updateArticleNoteById(req.params.id, savedNote, res);
+      if (article.note) {
+        // Replace the existing note which _id is saved in article.note
+        updateNoteById(article, req.body, res);
+      } else {
+        // Create a new note and update Article.note with
+        // new note's _id
+        createNodeUpdateArticleNote(req.params.id, req, res);   
+      }
     }
-  });
+  })  
 });
 
 // Function
@@ -199,9 +202,9 @@ function findArticleById(id, res) {
 }
 
 //
-function updateArticleNoteById(article_id, note, res) {
+function updateArticleNoteById(article_id, note_id, res) {
     // Use the article id to find and update it's note
-    Article.findOneAndUpdate({ "_id": article_id }, { "note": note._id })
+    Article.findOneAndUpdate({ "_id": article_id }, { "note": note_id })
     // Execute the above query
     .exec(function(err, doc) {
       // Log any errors
@@ -209,6 +212,37 @@ function updateArticleNoteById(article_id, note, res) {
         console.log(err);
       }  else {
         findArticleById(article_id, res);
+      }
+    });
+}
+//
+function createNodeUpdateArticleNote(article_id, req, res) {
+  // Create a new note and pass the req.body to the entry
+  var newNote = new Note(req.body);
+
+  // And save the new note the db
+  newNote.save(function(error, savedNote) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    } else {
+      // Otherwise
+      updateArticleNoteById(article_id, savedNote._id, res);
+    }
+  });
+}
+// Update and existing note that its _id is saved in Article.note
+function updateNoteById(article, note, res) { 
+  // parameter note is in req.body and passed from browser
+  Note.findOneAndUpdate({ "_id": article.note },
+    { "title": note.title, "body": note.body})
+    // Execute the above query
+    .exec(function(err, doc) {
+      // Log any errors
+      if (err) {
+        console.log(err);
+      }  else {
+        findArticleById(article._id, res);
       }
     });
 }
