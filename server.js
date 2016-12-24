@@ -65,10 +65,10 @@ app.get("/", function(req, res) {
   res.sendFile(path.join(__dirname, 'public/assets/html/index.html'));
 });
 
-// A GET request to scrape the echojs website
+// A GET request to scrape the CNET website
 app.get("/scrape", function(req, res) {
 
-  // Making a request call for CNET100. But only pick top 10
+  // Making a request call for CNET100, the top 100 products CNET reviewed. But pick only top 10.
   request("https://www.cnet.com/cnet100", function(error, response, html) {
     debugger;
    // Load the HTML into cheerio and save it to a variable
@@ -204,7 +204,7 @@ app.delete("/note", function(req, res) {
 
 // Using the id passed in the id parameter,
 // prepare a query that finds the matching one in our db...
-// and send response back to client (browser)
+// and send the article back to client (browser)
 function findArticleById(id, res) {
   // finds the matching one in our db
   Article.findOne({ "_id": id })
@@ -223,7 +223,8 @@ function findArticleById(id, res) {
   });
 }
 
-//
+// Update note id in an article with article_id
+// then send the article back to the browser
 function updateArticleNoteById(article_id, note_id, res) {
     // Use the article id to find and update it's note
     Article.findOneAndUpdate({ "_id": article_id }, { "note": note_id })
@@ -237,7 +238,9 @@ function updateArticleNoteById(article_id, note_id, res) {
       }
     });
 }
-//
+
+// Create a new note, update the note id in the article with
+// article_id, then send the article back to the browser  
 function createNodeUpdateArticleNote(article_id, req, res) {
   // Create a new note and pass the req.body to the entry
   var newNote = new Note(req.body);
@@ -253,9 +256,10 @@ function createNodeUpdateArticleNote(article_id, req, res) {
     }
   });
 }
-// Update and existing note that its _id is saved in Article.note
+// Update and existing note that its _id is saved in the article.note
+// then send the article back to the browser
 function updateNoteById(article, note, res) { 
-  // parameter note is in req.body and passed from browser
+  // Update the note with new contents
   Note.findOneAndUpdate({ "_id": article.note },
     { "title": note.title, "body": note.body})
     // Execute the above query
